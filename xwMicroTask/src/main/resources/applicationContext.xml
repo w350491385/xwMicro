@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:rpcCommon="http://rpc.com/schema/rpcCommon"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
+                        http://www.springframework.org/schema/context    
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd    
+                        http://www.springframework.org/schema/mvc    
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                        http://rpc.com/schema/rpcCommon
+    					http://rpc.com/schema/rpcCommon/rpcCommon.xsd">
+
+    <!-- 自动扫描 -->
+    <context:component-scan base-package="com.cn"/>
+
+    <!-- 任务初始化容器 -->
+    <bean class="com.cn.init.TaskInitContainer"/>
+
+    <!-- 获取 applicationContext -->
+    <bean class="com.rpc.spring.ApplicationContextUtils"/>
+    <bean class="com.cn.init.BeanFactoryUtils"/>
+
+    <!-- 当schudule属性发生改变时，刷新定时任务  -->
+    <bean id="scheduleRefreshServer" class="com.cn.common.ScheduleRefreshServerImpl"/>
+
+    <bean id="etchChangeRefreshAdptive" class="com.rpc.etcd.callback.EtchChangeRefreshAdaptive">
+        <property name="refRefreshServer">
+            <map>
+                <entry key="schedule" value-ref="scheduleRefreshServer"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- 注册中心地址  -->
+    <rpcCommon:register address="http://192.168.1.158:2379" localPort="8899" group="task" />
+
+    <!-- 客户端引用服务端  -->
+    <rpcCommon:rpcCommonClient id="taskDataService" interfaceClass="com.cn.task.TaskDataService"/>
+    
+    <rpcCommon:rpcCommonClient id="smsDataService" interfaceClass="com.cn.sms.SmsDataService"/>
+</beans>

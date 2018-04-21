@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:rpcCommon="http://rpc.com/schema/rpcCommon"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
+                        http://www.springframework.org/schema/context    
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd    
+                        http://www.springframework.org/schema/mvc    
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                        http://rpc.com/schema/rpcCommon
+    					   http://rpc.com/schema/rpcCommon/rpcCommon.xsd
+    					   http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+    <!-- 自动扫描 -->
+    <context:component-scan base-package="com.cn"/>
+
+    <!-- 配置文件 -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/config/jdbc.properties</value>
+                <value>classpath:/config/system-config.properties</value>
+                <value>classpath:/config/mq.properties</value>
+                <value>classpath:/config/redis-cluster.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <rpcCommon:register address="${registerHost}" localPort="${registerPort}" group="${registerGroup}"/>
+
+    <import resource="classpath*:/spring/applicationContext-mq.xml" />
+    <import resource="classpath*:/spring/applicationContext-server.xml"/>
+    <import resource="classpath*:/spring/applicationContext-jdbc.xml"/>
+    <import resource="classpath*:/spring/applicationContext-redis.xml"/>
+</beans>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>  
+    <properties resource="mybatis-generate.properties" />  
+    <!-- 在MBG工作的时候，需要额外加载的依赖包 location属性指明加载jar/zip包的全路径 -->  
+   <classPathEntry location="${generate.connection.location}"/>  
+   
+   <context id="Mysql">
+
+    <!-- 加入插件 -->
+	<plugin type="com.xw.common.MySQLLimitPlugin"></plugin>
+
+    <!-- 注释 -->  
+    <commentGenerator>  
+        <property name="suppressAllComments" value="false"/>  
+        <property name="suppressDate" value="true"/>  
+        <property name="javaFileEncoding" value="utf-8" />  
+        <property name="javaFormatter"  value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>  
+        <property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>  
+    </commentGenerator>  
+
+    <!-- 数据库连接 -->  
+    <jdbcConnection driverClass="${mysql.driverName}" connectionURL="${mysql.url}" userId="${mysql.username}" password="${mysql.password}"></jdbcConnection>  
+
+    <!-- java类型处理器 用于处理DB中的类型到Java中的类型，默认使用JavaTypeResolverDefaultImpl； 注意一点，默认会先尝试使用Integer，Long，Short等来对应DECIMAL和   
+        NUMERIC数据类型； -->  
+    <javaTypeResolver  type="org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl"/>  
+
+    <javaModelGenerator targetPackage="${modelPackage}" targetProject=".\src\main\java">
+        <property name="enableSubPackages" value="false"></property>  
+        <property name="trimStrings" value="true"></property>  
+        <property name="constructorBased" value="false"></property>  
+        <property name="immutable" value="false" />  
+    </javaModelGenerator>  
+
+    <sqlMapGenerator targetPackage="${sqlMapperPackage}" targetProject=".\src\main\resources"/>
+
+    <javaClientGenerator targetPackage="${mapperPackage}" type="XMLMAPPER" targetProject=".\src\main\java"/>
+
+    <table tableName="sms_push"/>
+    <table tableName="task_data"/>
+    </context>
+</generatorConfiguration>  

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://rpc.com/schema/rpcCommon" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	targetNamespace="http://rpc.com/schema/rpcCommon"
+	xmlns:tool="http://www.springframework.org/schema/tool"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+	<xsd:import namespace="http://www.springframework.org/schema/beans"/>
+	<xsd:import namespace="http://www.springframework.org/schema/tool"/>
+
+	<xsd:element name="rpcCommonServer">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:attribute name="name" type="xsd:string"
+						use="optional" />
+					<xsd:attribute name="interfaceClass" type="xsd:token"	use="required">
+						<xsd:annotation>
+						<xsd:documentation><![CDATA[ Defines the interface to advertise for this service in the service registry. ]]></xsd:documentation>
+						<xsd:appinfo>
+							<tool:annotation>
+								<tool:expected-type type="java.lang.Class"/>
+							</tool:annotation>
+						</xsd:appinfo>
+					</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="ref" type="xsd:string" use="optional">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[ The service implementation instance interfaceClass. ]]></xsd:documentation>
+						</xsd:annotation>
+				    </xsd:attribute>
+				     <xsd:attribute name="downgrade" type="xsd:boolean" use="optional" default="false"/>
+				     <xsd:attribute name="protocol" type="xsd:string" use="optional" default="hessian" />
+				    <xsd:attribute name="downgradeProcessor" type="xsd:string" use="optional">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[ The object must implementation DowngradeProcessor. ]]></xsd:documentation>
+						</xsd:annotation>
+				    </xsd:attribute>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="methodType">
+		<xsd:attribute name="method" type="xsd:string"/>
+		<xsd:attribute name="returnType" type="xsd:string"/>
+		<xsd:attribute name="retries" type="xsd:integer" use="optional" default="3" />
+		<xsd:attribute name="async" type="xsd:boolean" use="optional" default="false"/>
+		<xsd:attribute name="timeout" type="xsd:integer" use="optional" default="2000" />
+	</xsd:complexType>
+
+	<xsd:element name="clientMethod" type="methodType">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[ The client method parameter ]]></xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="rpcCommonClient">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+						<xsd:element ref="clientMethod" minOccurs="0" maxOccurs="unbounded" />
+					</xsd:sequence>
+					<xsd:attribute name="name" type="xsd:string" 	use="optional" />
+					<xsd:attribute name="interfaceClass" type="xsd:token"	use="required">
+						<xsd:annotation>
+						<xsd:documentation><![CDATA[ Defines the interface to advertise for this service in the service registry. ]]></xsd:documentation>
+						<xsd:appinfo>
+							<tool:annotation>
+								<tool:expected-type type="java.lang.Class"/>
+							</tool:annotation>
+						</xsd:appinfo>
+					</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="url" type="xsd:string" use="optional" />
+					<xsd:attribute name="cluster" type="xsd:string" use="optional" default="failover"/>
+					<xsd:attribute name="balance" type="xsd:string" use="optional" default="round" />
+					<xsd:attribute name="protocol" type="xsd:string" use="optional" default="hessian" />
+					<xsd:attribute name="timeout" type="xsd:integer" use="optional" default="2000" />
+					<xsd:attribute name="group" type="xsd:string" use="optional" default="" />
+					<xsd:attribute name="retries" type="xsd:integer" use="optional" default="3" />
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+		<xsd:element name="register">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:attribute name="address" type="xsd:string" use="required" />
+					<xsd:attribute name="localPort" type="xsd:string" use="required"/>
+					<xsd:attribute name="webApp" type="xsd:string" use="optional" default="" />
+					<xsd:attribute name="group" type="xsd:string" use="optional"/>
+					<xsd:attribute name="registerType" type="xsd:string" use="optional" default="etcd" />
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

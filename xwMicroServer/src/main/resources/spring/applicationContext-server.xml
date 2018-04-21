@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:rpcCommon="http://rpc.com/schema/rpcCommon"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                        http://rpc.com/schema/rpcCommon
+    					   http://rpc.com/schema/rpcCommon/rpcCommon.xsd">
+
+    <bean id="datasourceRefreshServerImpl" class="com.cn.common.DatasourceRefreshServerImpl"/>
+    <bean id="otherRefreshServerImpl" class="com.cn.common.OtherRefreshServerImpl"/>
+
+    <bean id="etchChangeRefreshAdptive" class="com.rpc.etcd.callback.EtchChangeRefreshAdaptive">
+        <property name="refRefreshServer">
+            <map>
+                <entry key="datasource" value-ref="datasourceRefreshServerImpl"/>
+                <entry key="other" value-ref="otherRefreshServerImpl"/>
+            </map>
+        </property>
+        <property name="refTarget">
+            <map>
+                <entry key="datasource" value="dataSource"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean class="com.rpc.spring.ApplicationContextUtils"/>
+
+    <rpcCommon:rpcCommonServer interfaceClass="com.cn.server.user.UserService" ref="userServiceImpl"/>
+
+    <rpcCommon:rpcCommonServer interfaceClass="com.cn.task.TaskDataService" ref="taskDataServiceImpl"/>
+
+    <rpcCommon:rpcCommonServer interfaceClass="com.cn.sms.SmsDataService" ref="smsDataServiceImpl"/>
+    </beans>
